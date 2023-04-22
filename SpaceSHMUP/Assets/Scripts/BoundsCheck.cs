@@ -1,13 +1,3 @@
-/**** 
- * Created by: Akram Taghavi-Burris
- * Date Created: March 16, 2022
- * 
- * Last Edited by: 
- * Last Edited: 
- * 
- * Description: Checks if object is in bounds of camera
-****/
-
 /*** Using Namespaces ***/
 using System.Collections;
 using System.Collections.Generic;
@@ -16,11 +6,11 @@ using UnityEngine;
 public class BoundsCheck : MonoBehaviour
 {
     /*** VARIABLES ***/
-    [Header("Bounds Settings")]
-    public float radius = 1f;//the radius around the object to keep on screen
-    public bool keepOnScreen = true; //does the object need to stay on screen
+    [Header("Inscribed")]
+    public float radius = 4f;
+    public bool keepOnScreen = true;
 
-    [HideInInspector]
+    [Header("Dynamic")]
     public bool isOnScreen = true; //is the object on screen 
     [HideInInspector]
     public bool offLeft, offRight, offUp, offDown; //checks for where the object is off screen
@@ -36,10 +26,7 @@ public class BoundsCheck : MonoBehaviour
     void Awake()
     {
         camHeight = Camera.main.orthographicSize; 
-        //Height is the orthographic size of the main camera
-        camWidth = camHeight * Camera.main.aspect; 
-        //Aspect ratio is defined in the game view, multipling by the height will give the distance from the orging to the left of right edge of the scene.
-
+        camWidth = camHeight * Camera.main.aspect;  
     }//end Awake()
 
 
@@ -49,25 +36,21 @@ public class BoundsCheck : MonoBehaviour
         Vector3 pos = transform.position; //vector 3 position 
         isOnScreen = true;
 
-        //Right bound check
         if(pos.x > camWidth - radius)
         {   pos.x = camWidth - radius;
             offRight = true;
         }
 
-        //Left bound check
         if (pos.x < -camWidth + radius) 
         {   pos.x = -camWidth + radius;
             offLeft = true;
         }
 
-        //Top bound check
         if (pos.y > camHeight - radius) 
         {   pos.y = camHeight - radius;
             offUp = true;
         }
 
-        //Bottom bound check
         if (pos.y < -camHeight + radius) 
         {   pos.y = -camHeight + radius;
             offDown = true;

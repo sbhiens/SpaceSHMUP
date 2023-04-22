@@ -1,14 +1,3 @@
-/**** 
- * Created by: Akram Taghavi-Burris
- * Date Created: March 16, 2022
- * 
- * Last Edited by:
- * Last Edited: 
- * 
- * Description: Shield level controler, adjusts the fresnel effect power based on level of shields.
-****/
-
-
 /*** Using Namespaces ***/
 using System.Collections;
 using System.Collections.Generic;
@@ -18,36 +7,51 @@ public class Shield : MonoBehaviour
 {
     /*** VARIABLES ***/
     public Color shieldColor; //color of shields
-    public Color shieldHitColor; //color of shields hit
+ /*   public Color shieldHitColor; //color of shields hit
     public Color shieldPowerColor; //color of shields powerup
     public float alphaLevel = 0.5f; //the shiled level shown by shader
     public float minAlpha = 0.5f; //semi-transparent fresnel effect
     public float maxAlpha = 1f; //transparent fresnel effect
-
+ */
     private float currLevel; //the ships current shield level
     private float lastLevel; //the last recorded amount of shield level
     private Material mat; //material of shield
+
+    [Header("Inscribed")]
+    public float rotationsPerSecond = 0.1f;
+
+    [Header("Dynamic")]
+    public int levelShown = 0;
 
     /*** MEHTODS ***/
 
     // Start is called before the first frame update
     void Start()
     {
-        currLevel = Hero.SHIP.shieldLevel; //get the shield level
+   /*     currLevel = Hero.S.shieldLevel; //get the shield level
         lastLevel = currLevel; //record the shield level
         alphaLevel = 0.5f; //set the default alpha
         mat = GetComponent<Renderer>().material; //get the material for the shield
         mat.SetColor("_color", shieldColor); //set the defualt color
         mat.SetFloat("_alphaLevel", alphaLevel); //finds the materials shader variable, and sets the value
-    }
+  */  }
 
     // Update is called once per frame
     void Update()
     {
-        currLevel = Hero.SHIP.shieldLevel;
+        currLevel = Hero.S.shieldLevel;
 
-        //if we are at maximum shields
-        if (currLevel == Hero.SHIP.maxShield)
+        int shieldLevel = Mathf.FloorToInt(Hero.S.shieldLevel);
+        if(levelShown != shieldLevel)
+        {
+            levelShown = shieldLevel;
+            mat.mainTextureOffset = new Vector2(0.2f * levelShown, 0);
+        }
+        float rZ = -(rotationsPerSecond * Time.time * 360) % 360f;
+        transform.rotation = Quaternion.Euler(0, 0, rZ);
+
+     /*   //if we are at maximum shields
+        if (currLevel == Hero.S.maxShield)
         {
             alphaLevel = 0.5f; //set the level shown to our default 
             mat.SetFloat("_alphaLevel", alphaLevel); //set the level shown for the Fresnel effect
@@ -74,13 +78,7 @@ public class Shield : MonoBehaviour
 
             Invoke("ColorChange", 0.25f); //delay color rest
         }
-
+*/
     }//end Update()
-
-    //Reset the shield color
-    private void ColorChange()
-    {
-        mat.SetColor("_color", shieldColor);
-    }//end ColorChange()
 
 }

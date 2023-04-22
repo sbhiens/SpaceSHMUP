@@ -1,16 +1,7 @@
-/**** 
- * Created by: Akram Taghavi-Burris
- * Date Created: March 16, 2022
- * 
- * Last Edited by: 
- * Last Edited: 
- * 
- * Description: Enemy controler
-****/
-
 /*** Using Namespaces ***/
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 
@@ -19,8 +10,10 @@ public class Enemy : MonoBehaviour
 {
     /*** VARIABLES ***/
 
-    [Header("Enemy Settings")]
+    [Header("Inscribed")]
     public float speed = 10f;
+    public float rollMult = -45f;
+    public float pitchMult = 5f;
     public float fireRate = 0.3f;
     public float health = 10;
     public int score = 100;
@@ -30,8 +23,14 @@ public class Enemy : MonoBehaviour
     //method that acts as a field (property)
     public Vector3 pos
     {
-        get { return (this.transform.position); }
-        set { this.transform.position = value; }
+        get 
+        { 
+            return this.transform.position; 
+        }
+        set 
+        { 
+            this.transform.position = value; 
+        }
     }
 
     /*** MEHTODS ***/
@@ -42,24 +41,44 @@ public class Enemy : MonoBehaviour
         bndCheck = GetComponent<BoundsCheck>();
     }//end Awake()
 
+    public Quaternion rot
+    {
+        get
+        {
+            return this.transform.rotation;
+        }
+        set
+        {
+            this.transform.rotation = value;
+        }
+    }
 
     // Update is called once per frame
     void Update()
     {
-       //Call the Move Method
-
-
-        //Check if bounds check exists and the object is off the bottom of the screne
-        if(bndCheck != null && bndCheck.offDown)
+        Move();
+        if(pos.y + bndCheck.radius < -bndCheck.camHeight)
         {
               Destroy(gameObject); //destory the object
 
-        }//end if(bndCheck != null && !bndCheck.offDown)
-
-
+        }
     }//end Update()
 
-    
-    //Virtual methods can be overridden by child instances
+    void OnCollisionEnter(Collision other)
+    {
+        GameObject otherGo = other.gameObject;
+        if(otherGo.GetComponent<ProjectileHero>() != null)
+        {
+            Destroy(otherGo);
+            Destroy(gameObject);
+        }
+    }
+
+    public virtual void Move()
+    {
+        Vector3 tempPos = pos;
+        tempPos.y -= speed * Time.deltaTime;
+        pos = tempPos;
+    }
 
 }
