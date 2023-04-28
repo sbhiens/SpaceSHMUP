@@ -53,9 +53,14 @@ public class Main : MonoBehaviour
     static public void HERO_DIED()
     {
         S.heroIsAlive = false;
-        S.Invoke(nameof(Restart), S.gameRestartDelay);
+        S.DelayedRestart();
     }
 
+    void DelayedRestart()
+    {
+        Invoke(nameof(Restart), gameRestartDelay);
+    }
+    
     void Restart()
     {
         SceneManager.LoadScene("__Scene_0");
